@@ -153,6 +153,41 @@ class _HomeState extends State<Home> {
               children: [
                 _headItems(),
                 Container(
+                  margin: const EdgeInsets.only(left: 20),
+                  height: 120,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Mis mascotas',
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          // button add pet
+                          Container(
+                            margin: const EdgeInsets.only(right: 10),
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: const Icon(
+                              Icons.add,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          const Text('Agregar mascota'),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                Container(
                   margin: const EdgeInsets.all(0),
                   child: _scrollHoriontal(),
                 ),
@@ -162,73 +197,7 @@ class _HomeState extends State<Home> {
                   color: Colors.grey,
                   thickness: 1,
                 ),
-                Container(
-                  height: 50,
-                  // color: Colors.grey,
-                  child: Row(
-                    children: [
-                      const Text(
-                        'Productos cerca  ',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Row(
-                        children: [
-                          // list view to text with scroll horizontal
-                          Container(
-                            width: 225,
-                            height: 20,
-                            alignment: Alignment.center,
-                            // color: Colors.red,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: images.length,
-                              itemBuilder: (context, index) {
-                                // return Padding(
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: ElevatedButton(
-                                    onPressed: null,
-                                    child: Text(
-                                      images[index]['name'].toString(),
-                                      // "aaa",
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                        Colors.green,
-                                      ),
-                                      shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(18.0),
-                                          side: const BorderSide(
-                                              color: Colors.grey),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                                //   padding: const EdgeInsets.only(right: 8.0),
-                                //   child: Text(
-                                //     "${images[index]['name']}",
-                                //     style: const TextStyle(
-                                //         fontSize: 18, color: Colors.purple),
-                                //     textAlign: TextAlign.center,
-                                //   ),
-                                // );
-                              },
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
+                _productsList(),
                 // Expanded(child: _pageChanged()),
                 _gridImages(context)
               ],
@@ -237,6 +206,75 @@ class _HomeState extends State<Home> {
         ),
       ),
       // bottomNavigationBar: _bottomNavigation(context),
+    );
+  }
+
+  Container _productsList() {
+    return Container(
+      height: 50,
+      margin: const EdgeInsets.only(top: 5),
+
+      // color: Colors.grey,
+      child: Row(
+        children: [
+          const Text(
+            'Productos cerca  ',
+            style: TextStyle(fontSize: 20),
+          ),
+          Row(
+            children: [
+              // list view to text with scroll horizontal
+              Container(
+                width: 225,
+                height: 20,
+                alignment: Alignment.center,
+                // color: Colors.red,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: images.length,
+                  itemBuilder: (context, index) {
+                    // return Padding(
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: ElevatedButton(
+                        onPressed: null,
+                        child: Text(
+                          images[index]['name'].toString(),
+                          // "aaa",
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                          ),
+                        ),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                            Colors.green,
+                          ),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: const BorderSide(color: Colors.grey),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                    //   padding: const EdgeInsets.only(right: 8.0),
+                    //   child: Text(
+                    //     "${images[index]['name']}",
+                    //     style: const TextStyle(
+                    //         fontSize: 18, color: Colors.purple),
+                    //     textAlign: TextAlign.center,
+                    //   ),
+                    // );
+                  },
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 
@@ -397,7 +435,7 @@ class _HomeState extends State<Home> {
               _comboBox()
             ],
           ),
-          const Divider(color: Colors.grey, height: 1),
+          const Divider(color: Colors.black38, height: 3),
         ],
       ),
     );
@@ -605,8 +643,8 @@ class _HomeState extends State<Home> {
             child: _pageChanged(),
             flex: 1,
           ),
-          const Divider(
-            color: Colors.grey,
+          Divider(
+            color: Colors.grey[200],
             height: 1,
           ),
           // Column(
