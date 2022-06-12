@@ -19,27 +19,36 @@ class _HomeState extends State<Home> {
   String dropdownValue = 'Entrega a domicilio';
   String dropdownValue2 = 'Calle 10 9';
   var images = [
-    {"image": "assets/images/1.png", "name": "Servicios"},
-    {"image": "assets/images/2.png", "name": "Cuidados"},
-    {"image": "assets/images/3.png", "name": "Veterinarios"},
-    {"image": "assets/images/4.png", "name": "Médicos"},
+    {
+      "image": "assets/images/1.png",
+      "name": "Servicios",
+      "desc":
+          "La Clínica Veterinaria del Bosque proporciona servicios veterinarios integrales de la más alta calidad. Contamos con urgencias veterinarias 24 hrs."
+    },
+    {
+      "image": "assets/images/2.png",
+      "name": "Cuidados",
+      "desc":
+          "Los cuidados veterinarios básicos incluyen control de parásitos, con el fin de que la mascota mantenga su buena salud y no se afecte la salud de nosotros."
+    },
+    {
+      "image": "assets/images/3.png",
+      "name": "Veterinarios",
+      "desc":
+          "Los veterinarios diagnostican y tratan los animales enfermos y heridos. También previenen la enfermedad y la mala salud, ."
+    },
+    {
+      "image": "assets/images/4.png",
+      "name": "Médicos",
+      "desc":
+          "La Clínica Veterinaria del Bosque proporciona servicios veterinarios integrales de la más alta calidad. Contamos con urgencias veterinarias 24 hrs."
+    },
   ];
 
   var images_desc = [
     "assets/images/1.png",
     "assets/images/2.png",
     "assets/images/3.png",
-  ];
-
-  var gridImages = [
-    "assets/images/B1.png",
-    "assets/images/B2.png",
-    "assets/images/B3.png",
-    "assets/images/B4.png",
-    "assets/images/B1.png",
-    "assets/images/B2.png",
-    "assets/images/B3.png",
-    "assets/images/B4.png",
   ];
 
   Timer? timer;
@@ -107,28 +116,42 @@ class _HomeState extends State<Home> {
             const Text(
               'Tienda',
             ),
-            Image.asset(
-              'assets/images/2.png',
-              width: 60,
-              height: 60,
-              // color: Colors.white,
+            SizedBox(
+              width: 100,
+              // color: Colors.redAccent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: const [
+                  Icon(Icons.shopping_bag_outlined),
+                  Icon(Icons.notifications_none),
+                  Icon(Icons.supervised_user_circle_rounded),
+                  // Image.asset(
+                  //   'assets/images/2.png',
+                  //   width: 60,
+                  //   height: 60,
+                  //   // color: Colors.white,
+                  // ),
+                ],
+              ),
             ),
           ],
         ),
         backgroundColor: const Color(0xff4f1581),
         elevation: 0,
-        toolbarHeight: 60,
+        toolbarHeight: 45,
       ),
       body: SafeArea(
         child: Container(
-          // color: Colors.grey[200],
-          height: double.infinity,
-          margin: const EdgeInsets.all(20),
+          // color: Colors.grey,
+          // height: double.infinity,
+          margin: const EdgeInsets.only(right: 5, left: 5, bottom: 10, top: 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _headItems(),
-              _scrollHoriontal(),
+              Container(
+                  margin: const EdgeInsets.all(0), child: _scrollHoriontal()),
+
               _sliderImage(),
               // Expanded(child: _pageChanged()),
               _gridImages(context)
@@ -171,17 +194,44 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Expanded _headItems() {
-    return Expanded(
-      flex: 2,
+  Container _headItems() {
+    return Container(
+      // flex: 1,
+      margin: const EdgeInsets.only(top: 0, left: 0, right: 0, bottom: 10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Hola Juan,',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              const Text.rich(
+                TextSpan(
+                  text: 'Hola ',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: 'Juan',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
+                    TextSpan(
+                      text: ',',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Image.asset("assets/images/2.png", width: 60, height: 60),
               //
               // _comboBox()
@@ -206,7 +256,8 @@ class _HomeState extends State<Home> {
               ),
               _comboBox()
             ],
-          )
+          ),
+          const Divider(color: Colors.grey, height: 1),
         ],
       ),
     );
@@ -282,11 +333,11 @@ class _HomeState extends State<Home> {
 
   Expanded _scrollHoriontal() {
     return Expanded(
-      flex: 3,
+      flex: 1,
       child: Column(
         // mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             // color: Colors.greenAccent,}
             height: 180,
             child: ListView.builder(
@@ -309,7 +360,7 @@ class _HomeState extends State<Home> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset(images[index]['image'].toString(),
-                            width: 150, height: 130),
+                            width: 140, height: 120),
                         Text(images[index]['name'].toString(),
                             style: const TextStyle(
                                 fontSize: 20,
@@ -357,21 +408,26 @@ class _HomeState extends State<Home> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
-                                child: Image.asset(gridImages[index]),
+                                child: Image.asset(
+                                  images[index]['image'].toString(),
+                                  width: 200,
+                                  height: 200,
+                                ),
                               ),
                               // const SizedBox(height: 15),
-                              const Text(
-                                'Travel',
-                                style: TextStyle(
+                              Text(
+                                images[index]['name'].toString(),
+                                style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 18),
                               ),
                               const SizedBox(
                                 height: 10,
                               ),
-                              const Text(
-                                "lorem ipsum dore asde asdh name sdt jhas khuus",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 15),
+                              Text(
+                                images[index]['desc'].toString(),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 15),
                               )
                             ],
                           ),
@@ -399,14 +455,20 @@ class _HomeState extends State<Home> {
   Container _sliderImage() {
     return Container(
       // color: Colors.yellowAccent,
-      height: 165,
-      margin: const EdgeInsets.only(top: 0),
-      width: double.infinity,
+
+      height: 170,
+      // color: Colors.red,
+      // margin: const EdgeInsets.only(top: 0, left: 5, right: 5, bottom: 0),
+      width: 355,
       child: Column(
         children: [
           Expanded(
             child: _pageChanged(),
             flex: 1,
+          ),
+          const Divider(
+            color: Colors.grey,
+            height: 1,
           ),
           // Column(
           //   children: <Widget>[
@@ -475,35 +537,11 @@ class ContainerBoarding extends StatelessWidget {
         // Container(
         // decoration:
         //     BoxDecoration(border: Border.all(color: const Color(0xff4f1581))),
-        Column(
-          children: [
-            // Image.network(url),
-            // Text(
-            //   nombre,
-            //   style: const TextStyle(fontSize: 25),
-            // ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                // color: Colors.redAccent,
-              ),
-              child: Column(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image(
-                      image: NetworkImage(image),
-                    ),
-                  ),
-                  // Image.network(image),
-                  // Text(
-                  //   text,
-                  //   style: const TextStyle(fontSize: 20),
-                  // ),
-                ],
-              ),
-            ),
-          ],
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Image(
+            image: NetworkImage(image),
+          ),
         ),
         // ),
       ],
