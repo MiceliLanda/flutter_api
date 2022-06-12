@@ -127,51 +127,10 @@ class _HomeState extends State<Home> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                flex: 2,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Hola Juan,',
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold)),
-                        Image.asset("assets/images/2.png",
-                            width: 60, height: 60),
-                        //
-                        // _comboBox()
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Image.asset("assets/images/2.png",
-                                width: 40, height: 50),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Column(
-                              children: [
-                                const Text('Entregar ahora'),
-                                _comboBox2(),
-                              ],
-                            )
-                          ],
-                        ),
-                        _comboBox()
-                      ],
-                    )
-                  ],
-                ),
-              ),
+              _headItems(),
               _scrollHoriontal(),
               _sliderImage(),
               // Expanded(child: _pageChanged()),
-
               _gridImages(context)
             ],
           ),
@@ -208,6 +167,47 @@ class _HomeState extends State<Home> {
                 MaterialPageRoute(builder: (context) => const Login()));
           }
         },
+      ),
+    );
+  }
+
+  Expanded _headItems() {
+    return Expanded(
+      flex: 2,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Hola Juan,',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Image.asset("assets/images/2.png", width: 60, height: 60),
+              //
+              // _comboBox()
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Image.asset("assets/images/2.png", width: 40, height: 50),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Column(
+                    children: [
+                      const Text('Entregar ahora'),
+                      _comboBox2(),
+                    ],
+                  )
+                ],
+              ),
+              _comboBox()
+            ],
+          )
+        ],
       ),
     );
   }
@@ -284,28 +284,43 @@ class _HomeState extends State<Home> {
     return Expanded(
       flex: 3,
       child: Column(
+        // mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
+          Container(
+            // color: Colors.greenAccent,}
             height: 180,
             child: ListView.builder(
-                itemCount: images.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) => Container(
-                      width: 170,
-                      margin: const EdgeInsets.only(right: 15),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: const Color(0xff4f1581)),
-                        image: DecorationImage(
-                            image:
-                                AssetImage(images[index]['image'].toString()),
-                            fit: BoxFit.fill),
-                        // shape: BoxShape.rectangle
+              itemCount: images.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) => Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(right: 20),
+                    height: 180,
+                    decoration: BoxDecoration(
+                      // color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: const Color(0xff4f1581),
+                        width: 1,
                       ),
-                      child: Text(
-                        images[index]['name'].toString(),
-                      ),
-                    )),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(images[index]['image'].toString(),
+                            width: 150, height: 130),
+                        Text(images[index]['name'].toString(),
+                            style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           )
         ],
       ),
@@ -316,78 +331,76 @@ class _HomeState extends State<Home> {
     return Expanded(
       flex: 2,
       child: Container(
-          margin: const EdgeInsets.only(top: 10),
+          // height: 60,
+          // margin: const EdgeInsets.only(top: 0),
           child: GridView.count(
-            physics: const BouncingScrollPhysics(),
-            crossAxisCount: 2,
-            children: List.generate(gridImages.length, (index) {
-              return Container(
-                // decoration: BoxDecoration(
-                //     // border: Border.all(
-                //     //     // color: const Color(0xff4f1581),
-                //     //     ),
-                //     ),
-                child: GestureDetector(
-                  onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return Center(
-                            child: Material(
-                              type: MaterialType.transparency,
-                              child: Container(
-                                height: 350,
-                                // width: 330,
-                                padding: const EdgeInsets.all(15),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Image.asset(gridImages[index]),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    const Text(
-                                      'Travel',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    const Text(
-                                      "lorem ipsum dore asde asdh name sdt jhas khuus",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15),
-                                    )
-                                  ],
-                                ),
+        physics: const BouncingScrollPhysics(),
+        crossAxisCount: 2,
+        children: List.generate(images.length, (index) {
+          return GestureDetector(
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Center(
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: Container(
+                          height: 350,
+                          // width: 330,
+                          padding: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.asset(gridImages[index]),
                               ),
-                            ),
-                          );
-                        });
-                  },
-                  child: Card(
-                    color: Colors.white,
-                    child: Center(
-                      child: Image.asset(gridImages[index]),
-                    ),
-                  ),
-                ),
-              );
-            }),
-          )),
+                              // const SizedBox(height: 15),
+                              const Text(
+                                'Travel',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              const Text(
+                                "lorem ipsum dore asde asdh name sdt jhas khuus",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 15),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  });
+            },
+            child: Card(
+              // color: Colors.grey[400],
+              color: Colors.white,
+              shape: BeveledRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(color: Color.fromARGB(255, 136, 136, 136)),
+              ),
+              child: Image.asset(images[index]['image'].toString(),
+                  width: 10, height: 11),
+            ),
+          );
+        }),
+      )),
     );
   }
 
-  SizedBox _sliderImage() {
-    return SizedBox(
-      height: 200,
+  Container _sliderImage() {
+    return Container(
+      // color: Colors.yellowAccent,
+      height: 165,
+      margin: const EdgeInsets.only(top: 0),
       width: double.infinity,
       child: Column(
         children: [
@@ -395,17 +408,17 @@ class _HomeState extends State<Home> {
             child: _pageChanged(),
             flex: 1,
           ),
-          Column(
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  _carousselImages.length,
-                  (index) => _animatedContainer(index: index),
-                ),
-              ),
-            ],
-          ),
+          // Column(
+          //   children: <Widget>[
+          //     Row(
+          //       mainAxisAlignment: MainAxisAlignment.center,
+          //       children: List.generate(
+          //         _carousselImages.length,
+          //         (index) => _animatedContainer(index: index),
+          //       ),
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );
@@ -472,14 +485,21 @@ class ContainerBoarding extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
+                // color: Colors.redAccent,
               ),
               child: Column(
                 children: [
-                  Image.network(image),
-                  Text(
-                    text,
-                    style: const TextStyle(fontSize: 20),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image(
+                      image: NetworkImage(image),
+                    ),
                   ),
+                  // Image.network(image),
+                  // Text(
+                  //   text,
+                  //   style: const TextStyle(fontSize: 20),
+                  // ),
                 ],
               ),
             ),
