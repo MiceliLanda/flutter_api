@@ -1,4 +1,5 @@
 import 'package:consuming_api/views/Home/home.dart';
+import 'package:consuming_api/views/Home/market.dart';
 import 'package:consuming_api/views/Login/login_view.dart';
 import 'package:consuming_api/views/Register/register.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +14,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/login',
+      initialRoute: '/home',
       routes: {
         '/login': (context) => const Login(),
         '/register': (context) => const Register(),
         '/home': (context) => const Home(),
+        '/market': (context) => const Market(),
       },
     );
   }

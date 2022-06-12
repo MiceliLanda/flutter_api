@@ -57,8 +57,8 @@ class _RegisterState extends State<Register> {
             content: Text(
               response.body,
               textAlign: TextAlign.center,
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
             )));
       }
     } else {

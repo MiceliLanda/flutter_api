@@ -20,7 +20,7 @@ class _LoginState extends State<Login> {
   Future<void> _sendPostToken(String token) async {
     final accessToken = 'Bearer ' +
         token.replaceAll(
-            RegExp(r"[-!$%^&*()_+|~=`{}\[\]:;'<>?,\/"
+            RegExp(r"[!$%^&*()+|~=`{}\[\]:;'<>?,\/"
                 '"'
                 "]"),
             '');
