@@ -1,13 +1,11 @@
 // ignore_for_file: avoid_print
-
 import 'dart:async';
 import 'dart:convert';
 import 'package:consuming_api/views/Login/login_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
-
 import '../../models/caroussel.dart';
+import '../../models/pet_taxonomia.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -57,6 +55,26 @@ class _HomeState extends State<Home> {
   // int viewPort = 2;
   int pageInitial = 0;
   late PageController _pControler = PageController(initialPage: 0);
+  final List<PetTaxonimia> _pets = [];
+
+  Future<List<PetTaxonimia>> postTaxonomia() async {
+    final response = await http.post(
+        Uri.parse('http://desarrollovan-tis.dedyn.io:4030/GetPetTaxonomia'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"idChannel": "1"}));
+    List<PetTaxonimia> datos = [];
+    final jsonResponse = jsonDecode(response.body)['dtoPetTaxonomies'];
+
+    if (response.statusCode == 200) {
+      for (var jsonData in jsonResponse) {
+        datos.add(PetTaxonimia.fromJson(jsonData));
+        print('JsonData -> ' + jsonData.toString());
+      }
+    } else {
+      print('Error -> ' + response.statusCode.toString());
+    }
+    return datos;
+  }
 
   final List<CarousselImage> _carousselImages = [];
 
@@ -80,11 +98,18 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    postTaxonomia().then((value) {
+      setState(() {
+        _pets.addAll(value);
+      });
+    });
+
     postCaroussel().then((value) {
       setState(() {
         _carousselImages.addAll(value);
       });
     });
+
     _pControler = PageController(viewportFraction: 1, initialPage: 0);
     timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
       if (pageInitial == _carousselImages.length) {
@@ -231,7 +256,7 @@ class _HomeState extends State<Home> {
                 // color: Colors.red,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: images.length,
+                  itemCount: _pets.length,
                   itemBuilder: (context, index) {
                     // return Padding(
                     return Padding(
@@ -239,7 +264,8 @@ class _HomeState extends State<Home> {
                       child: ElevatedButton(
                         onPressed: null,
                         child: Text(
-                          images[index]['name'].toString(),
+                          _pets[index].pet[0].pet,
+
                           // "aaa",
                           style: const TextStyle(
                             fontSize: 15,
@@ -561,7 +587,8 @@ class _HomeState extends State<Home> {
       height: 150,
       child: GridView.count(
         physics: const BouncingScrollPhysics(),
-        crossAxisCount: 2,
+        crossAxisCount: 1,
+        scrollDirection: Axis.horizontal,
         children: List.generate(images.length, (index) {
           return GestureDetector(
             onTap: () {

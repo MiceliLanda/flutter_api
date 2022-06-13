@@ -2,8 +2,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:consuming_api/models/caroussel.dart';
+import 'package:consuming_api/models/products.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+import '../../models/pet_taxonomia.dart';
 
 class Market extends StatefulWidget {
   const Market({Key? key}) : super(key: key);
@@ -13,19 +16,43 @@ class Market extends StatefulWidget {
 }
 
 class _MarketState extends State<Market> {
-  final List<CarousselImage> _carousselImages = [];
+  final List<PetTaxonimia> _pets = [];
+  final List<Products> _productos = [];
 
-  Future<List<CarousselImage>> postCaroussel() async {
+  Future<List<Products>> _getPets() async {
     final response = await http.post(
-        Uri.parse('http://desarrollovan-tis.dedyn.io:4030/GetImagesCarousel'),
+        Uri.parse(
+            'http://desarrollovan-tis.dedyn.io:4030/GetProductsByIdSeller'),
+        body: jsonEncode({"idSeller": "1"}),
+        headers: {"Content-Type": "application/json"});
+    // print(jsonDecode(response.body)['getProducts']['response']['docs']);
+    List<Products> datos = [];
+    final jsonResponse =
+        jsonDecode(response.body)['getProducts']['response']['docs'];
+
+    if (response.statusCode == 200) {
+      for (var jsonData in jsonResponse) {
+        datos.add(Products.fromJson(jsonData));
+        // print('JsonData -> ' + jsonData.toString());
+      }
+    } else {
+      print('Error -> ' + response.statusCode.toString());
+    }
+    return datos;
+  }
+
+  Future<List<PetTaxonimia>> postTaxonomia() async {
+    final response = await http.post(
+        Uri.parse('http://desarrollovan-tis.dedyn.io:4030/GetPetTaxonomia'),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"idChannel": "1"}));
-    List<CarousselImage> datos = [];
+    List<PetTaxonimia> datos = [];
+    final jsonResponse = jsonDecode(response.body)['dtoPetTaxonomies'];
+
     if (response.statusCode == 200) {
-      final jsonResponse = json.decode(response.body)['dtoImageCarousels'];
       for (var jsonData in jsonResponse) {
-        datos.add(CarousselImage.fromJson(jsonData));
-        print('JsonData -> ' + jsonData.toString());
+        datos.add(PetTaxonimia.fromJson(jsonData));
+        // print('JsonData -> ' + jsonData.toString());
       }
     } else {
       print('Error -> ' + response.statusCode.toString());
@@ -35,11 +62,12 @@ class _MarketState extends State<Market> {
 
   @override
   void initState() {
-    postCaroussel().then((value) {
+    _getPets().then((value) {
       setState(() {
-        _carousselImages.addAll(value);
+        _productos.addAll(value);
       });
     });
+
     super.initState();
   }
 
@@ -49,18 +77,29 @@ class _MarketState extends State<Market> {
       appBar: AppBar(
         title: const Text('Market'),
       ),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          return Card(
-            child: Column(
-              children: <Widget>[
-                Image.network(_carousselImages[index].url.toString()),
-                Text(_carousselImages[index].nombre.toString()),
-              ],
-            ),
-          );
+      body: FutureBuilder(
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          // print(snapshot.connectionState);
+          // return Center(child: CircularProgressIndicator());
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return ListView.builder(
+              itemCount: _productos.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  textColor: Colors.black,
+                  title: Text(_productos[index].name),
+                  subtitle: Text(_productos[index].description),
+                  leading: Image.network(_productos[index].urlImage),
+                  trailing: Text(_productos[index].price.toString()),
+                );
+              },
+            );
+          }
         },
-        itemCount: _carousselImages.length,
       ),
     );
   }
