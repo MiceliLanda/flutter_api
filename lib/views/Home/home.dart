@@ -652,70 +652,88 @@ class _HomeState extends State<Home> {
         scrollDirection: Axis.horizontal,
         children: List.generate(_productos.length, (index) {
           return GestureDetector(
-            onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return Center(
-                      child: Material(
-                        type: MaterialType.transparency,
-                        child: Container(
-                          height: 350,
-                          // width: 330,
-                          padding: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  _productos[index].urlImage,
-                                  width: 300,
-                                  height: 250,
-                                ),
-                              ),
-                              // const SizedBox(height: 15),
-                              Text(
-                                _productos[index].name.toString(),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                _productos[index].description.toString(),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 15),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    "\$",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 17),
-                                  ),
-                                  Text(
-                                    (_productos[index].price).toString(),
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 17),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  });
-            },
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => viewProduct(
+                        _productos[index].name,
+                        _productos[index].description,
+                        _productos[index].price,
+                        _productos[index].urlImage))),
+            // onTap: () {
+            //   PageView(
+            //     children: [
+            //       viewProduct(
+            //           _productos[index].name,
+            //           _productos[index].description,
+            //           _productos[index].price,
+            //           _productos[index].urlImage),
+            //     ],
+            //   );
+
+            // showDialog(
+            //     context: context,
+            //     builder: (context) {
+            //       return Center(
+            //         child: Material(
+            //           type: MaterialType.transparency,
+            //           child: Container(
+            //             height: 350,
+            //             // width: 330,
+            //             padding: const EdgeInsets.all(15),
+            //             decoration: BoxDecoration(
+            //                 borderRadius: BorderRadius.circular(10),
+            //                 color: Colors.white),
+            //             child: Column(
+            //               crossAxisAlignment: CrossAxisAlignment.center,
+            //               children: [
+            //                 ClipRRect(
+            //                   borderRadius: BorderRadius.circular(10),
+            //                   child: Image.network(
+            //                     _productos[index].urlImage,
+            //                     width: 300,
+            //                     height: 250,
+            //                   ),
+            //                 ),
+            //                 // const SizedBox(height: 15),
+            //                 Text(
+            //                   _productos[index].name.toString(),
+            //                   style: const TextStyle(
+            //                       fontWeight: FontWeight.bold, fontSize: 18),
+            //                 ),
+            //                 const SizedBox(
+            //                   height: 10,
+            //                 ),
+            //                 Text(
+            //                   _productos[index].description.toString(),
+            //                   style: const TextStyle(
+            //                       fontWeight: FontWeight.normal,
+            //                       fontSize: 15),
+            //                 ),
+            //                 Row(
+            //                   mainAxisAlignment: MainAxisAlignment.center,
+            //                   children: [
+            //                     const Text(
+            //                       "\$",
+            //                       style: TextStyle(
+            //                           fontWeight: FontWeight.bold,
+            //                           fontSize: 17),
+            //                     ),
+            //                     Text(
+            //                       (_productos[index].price).toString(),
+            //                       style: const TextStyle(
+            //                           fontWeight: FontWeight.bold,
+            //                           fontSize: 17),
+            //                     ),
+            //                   ],
+            //                 ),
+            //               ],
+            //             ),
+            //           ),
+            //         ),
+            //       );
+            //     });
+            // },
             child: Card(
               // color: Colors.grey[400],
               color: Colors.white,
@@ -865,6 +883,75 @@ class ContainerBoarding extends StatelessWidget {
         ),
         // ),
       ],
+    );
+  }
+}
+
+class viewProduct extends StatelessWidget {
+  final String name, description, urlImage;
+  final double price;
+  viewProduct(this.name, this.description, this.price, this.urlImage);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Detalle producto'),
+        backgroundColor: const Color(0xff4f1581),
+      ),
+      body: Container(
+        color: Colors.white,
+        // width: double.infinity,
+        // height: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 350,
+              height: 300,
+              child: Image.network(urlImage),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              name,
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.green),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Text(
+              description,
+              style: const TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 15,
+                  color: Colors.grey),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "\$",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                ),
+                Text(
+                  (price).toString(),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 17),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
