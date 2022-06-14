@@ -81,7 +81,7 @@ class _HomeState extends State<Home> {
     if (response.statusCode == 200) {
       for (var jsonData in jsonResponse) {
         datos.add(PetTaxonimia.fromJson(jsonData));
-        print('JsonData -> ' + jsonData.toString());
+        // print('JsonData -> ' + jsonData.toString());
       }
     } else {
       print('Error -> ' + response.statusCode.toString());
@@ -99,7 +99,7 @@ class _HomeState extends State<Home> {
       final jsonResponse = json.decode(response.body)['dtoImageCarousels'];
       for (var jsonData in jsonResponse) {
         datos.add(CarousselImage.fromJson(jsonData));
-        print('JsonData -> ' + jsonData.toString());
+        // print('JsonData -> ' + jsonData.toString());
       }
     } else {
       print('Error -> ' + response.statusCode.toString());
