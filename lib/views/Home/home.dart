@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../models/caroussel.dart';
 import '../../models/pet_taxonomia.dart';
+import '../../models/products.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -29,19 +30,7 @@ class _HomeState extends State<Home> {
       "name": "Cuidados",
       "desc":
           "Los cuidados veterinarios básicos incluyen control de parásitos, con el fin de que la mascota mantenga su buena salud y no se afecte la salud de nosotros."
-    },
-    {
-      "image": "assets/images/3.png",
-      "name": "Veterinarios",
-      "desc":
-          "Los veterinarios diagnostican y tratan los animales enfermos y heridos. También previenen la enfermedad y la mala salud, ."
-    },
-    {
-      "image": "assets/images/4.png",
-      "name": "Médicos",
-      "desc":
-          "La Clínica Veterinaria del Bosque proporciona servicios veterinarios integrales de la más alta calidad. Contamos con urgencias veterinarias 24 hrs."
-    },
+    }
   ];
 
   var images_desc = [
@@ -56,6 +45,30 @@ class _HomeState extends State<Home> {
   int pageInitial = 0;
   late PageController _pControler = PageController(initialPage: 0);
   final List<PetTaxonimia> _pets = [];
+  final List<Products> _productos = [];
+  final List<CarousselImage> _carousselImages = [];
+
+  Future<List<Products>> _getPets() async {
+    final response = await http.post(
+        Uri.parse(
+            'http://desarrollovan-tis.dedyn.io:4030/GetProductsByIdSeller'),
+        body: jsonEncode({"idSeller": "1"}),
+        headers: {"Content-Type": "application/json"});
+    // print(jsonDecode(response.body)['getProducts']['response']['docs']);
+    List<Products> datos = [];
+    final jsonResponse =
+        jsonDecode(response.body)['getProducts']['response']['docs'];
+
+    if (response.statusCode == 200) {
+      for (var jsonData in jsonResponse) {
+        datos.add(Products.fromJson(jsonData));
+        // print('JsonData -> ' + jsonData.toString());
+      }
+    } else {
+      print('Error -> ' + response.statusCode.toString());
+    }
+    return datos;
+  }
 
   Future<List<PetTaxonimia>> postTaxonomia() async {
     final response = await http.post(
@@ -75,8 +88,6 @@ class _HomeState extends State<Home> {
     }
     return datos;
   }
-
-  final List<CarousselImage> _carousselImages = [];
 
   Future<List<CarousselImage>> postCaroussel() async {
     final response = await http.post(
@@ -98,6 +109,11 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    _getPets().then((value) {
+      setState(() {
+        _productos.addAll(value);
+      });
+    });
     postTaxonomia().then((value) {
       setState(() {
         _pets.addAll(value);
@@ -177,45 +193,8 @@ class _HomeState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _headItems(),
-                Container(
-                  margin: const EdgeInsets.only(left: 20),
-                  height: 120,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Mis mascotas',
-                        style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          // button add pet
-                          Container(
-                            margin: const EdgeInsets.only(right: 10),
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: const Icon(
-                              Icons.add,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          const Text('Agregar mascota'),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.all(0),
-                  child: _scrollHoriontal(),
-                ),
+                _addPets(),
+                _containerStatic(),
                 _searchBar(),
                 _sliderImage(),
                 const Divider(
@@ -231,6 +210,87 @@ class _HomeState extends State<Home> {
         ),
       ),
       // bottomNavigationBar: _bottomNavigation(context),
+    );
+  }
+
+  Center _containerStatic() {
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _staticBox(),
+          const SizedBox(
+            width: 20,
+          ),
+          _staticBox(),
+        ],
+      ),
+    );
+  }
+
+  Container _staticBox() {
+    return Container(
+      // margin: const EdgeInsets.only(right: 30),
+      // height: 180,
+      decoration: BoxDecoration(
+        // color: Colors.redAccent,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: const Color(0xff4f1581),
+          width: 1,
+        ),
+      ),
+      child: Container(
+        height: 180,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(images[0]['image'].toString(), width: 140, height: 120),
+            Text(images[0]['name'].toString(),
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Container _addPets() {
+    return Container(
+      margin: const EdgeInsets.only(left: 20),
+      height: 120,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Mis mascotas',
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              // button add pet
+              Container(
+                margin: const EdgeInsets.only(right: 10),
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.grey,
+                ),
+              ),
+              const Text('Agregar mascota'),
+            ],
+          )
+        ],
+      ),
     );
   }
 
@@ -537,12 +597,13 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Column _scrollHoriontal() {
+  Column _scrollHorizontal() {
     return Column(
       // mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox(
-          // color: Colors.greenAccent,}
+        Container(
+          color: Colors.greenAccent,
+          alignment: Alignment.center,
           height: 180,
           child: ListView.builder(
             itemCount: images.length,
@@ -551,7 +612,7 @@ class _HomeState extends State<Home> {
               children: [
                 Container(
                   margin: const EdgeInsets.only(right: 20),
-                  height: 180,
+                  // height: 180,
                   decoration: BoxDecoration(
                     // color: Colors.redAccent,
                     borderRadius: BorderRadius.circular(10),
@@ -584,12 +645,12 @@ class _HomeState extends State<Home> {
   Container _gridImages(BuildContext context) {
     return Container(
       // flex: 2,
-      height: 150,
+      height: 250,
       child: GridView.count(
         physics: const BouncingScrollPhysics(),
         crossAxisCount: 1,
         scrollDirection: Axis.horizontal,
-        children: List.generate(images.length, (index) {
+        children: List.generate(_productos.length, (index) {
           return GestureDetector(
             onTap: () {
               showDialog(
@@ -610,15 +671,15 @@ class _HomeState extends State<Home> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
-                                child: Image.asset(
-                                  images[index]['image'].toString(),
-                                  width: 200,
-                                  height: 200,
+                                child: Image.network(
+                                  _productos[index].urlImage,
+                                  width: 300,
+                                  height: 250,
                                 ),
                               ),
                               // const SizedBox(height: 15),
                               Text(
-                                images[index]['name'].toString(),
+                                _productos[index].name.toString(),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 18),
                               ),
@@ -626,11 +687,28 @@ class _HomeState extends State<Home> {
                                 height: 10,
                               ),
                               Text(
-                                images[index]['desc'].toString(),
+                                _productos[index].description.toString(),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.normal,
                                     fontSize: 15),
-                              )
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    "\$",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17),
+                                  ),
+                                  Text(
+                                    (_productos[index].price).toString(),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
@@ -644,10 +722,48 @@ class _HomeState extends State<Home> {
               shape: BeveledRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
                 side:
-                    const BorderSide(color: Color.fromARGB(255, 136, 136, 136)),
+                    const BorderSide(color: Color.fromARGB(255, 232, 232, 232)),
               ),
-              child: Image.asset(
-                images[index]['image'].toString(),
+              child: Container(
+                margin: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 220,
+                      height: 140,
+                      child: Image.network(_productos[index].urlImage),
+                    ),
+                    Text(
+                      _productos[index].name,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.green),
+                    ),
+                    Text(
+                      _productos[index].description,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 15,
+                          color: Colors.grey),
+                    ),
+                    Row(
+                      children: [
+                        const Text(
+                          "\$",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 17),
+                        ),
+                        Text(
+                          (_productos[index].price).toString(),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 17),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           );
