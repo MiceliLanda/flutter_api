@@ -33,12 +33,6 @@ class _HomeState extends State<Home> {
     }
   ];
 
-  var images_desc = [
-    "assets/images/1.png",
-    "assets/images/2.png",
-    "assets/images/3.png",
-  ];
-
   Timer? timer;
   // late List<dynamic> dataResponse;
   // int viewPort = 2;
@@ -81,7 +75,7 @@ class _HomeState extends State<Home> {
     if (response.statusCode == 200) {
       for (var jsonData in jsonResponse) {
         datos.add(PetTaxonimia.fromJson(jsonData));
-        // print('JsonData -> ' + jsonData.toString());
+        print('JsonData -> ' + jsonData.toString());
       }
     } else {
       print('Error -> ' + response.statusCode.toString());
@@ -209,6 +203,14 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
+      bottomNavigationBar: Container(
+        // height: 50,
+        color: const Color(0xff4f1581),
+        child: CustomPaint(
+          size: const Size(double.infinity, 50),
+          painter: _CustomPainter(),
+        ),
+      ),
       // bottomNavigationBar: _bottomNavigation(context),
     );
   }
@@ -218,17 +220,17 @@ class _HomeState extends State<Home> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _staticBox(),
+          _staticBox(0),
           const SizedBox(
             width: 20,
           ),
-          _staticBox(),
+          _staticBox(1),
         ],
       ),
     );
   }
 
-  Container _staticBox() {
+  Container _staticBox(int i) {
     return Container(
       // margin: const EdgeInsets.only(right: 30),
       // height: 180,
@@ -240,13 +242,13 @@ class _HomeState extends State<Home> {
           width: 1,
         ),
       ),
-      child: Container(
+      child: SizedBox(
         height: 180,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(images[0]['image'].toString(), width: 140, height: 120),
-            Text(images[0]['name'].toString(),
+            Image.asset(images[i]['image'].toString(), width: 140, height: 120),
+            Text(images[i]['name'].toString(),
                 style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -477,6 +479,7 @@ class _HomeState extends State<Home> {
                     color: Colors.black,
                   ),
                   children: [
+                    /* AQUI VA EL NOMBRE DEL USUARIO LOGEADO */
                     TextSpan(
                       text: 'Juan',
                       style: TextStyle(
@@ -645,8 +648,13 @@ class _HomeState extends State<Home> {
   Container _gridImages(BuildContext context) {
     return Container(
       // flex: 2,
-      height: 250,
+      height: 200,
+      margin: const EdgeInsets.only(top: 0, left: 8),
+      // width: 200,
+
+      // color: Colors.amber,
       child: GridView.count(
+        mainAxisSpacing: 0,
         physics: const BouncingScrollPhysics(),
         crossAxisCount: 1,
         scrollDirection: Axis.horizontal,
@@ -734,39 +742,48 @@ class _HomeState extends State<Home> {
             //       );
             //     });
             // },
-            child: Card(
-              // color: Colors.grey[400],
-              color: Colors.white,
-              shape: BeveledRectangleBorder(
+            child: Container(
+              margin: const EdgeInsets.only(right: 32),
+              width: 100,
+              decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                side:
-                    const BorderSide(color: Color.fromARGB(255, 232, 232, 232)),
+                border: Border.all(
+                  color: Color.fromARGB(255, 241, 241, 241),
+                  width: 1,
+                ),
               ),
               child: Container(
-                margin: const EdgeInsets.all(10),
+                margin: const EdgeInsets.only(left: 5),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Image.network(_productos[index].urlImage,
+                        width: 100, height: 100),
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      child: Text(
+                        _productos[index].name,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: Colors.green),
+                      ),
+                    ),
                     SizedBox(
-                      width: 220,
-                      height: 140,
-                      child: Image.network(_productos[index].urlImage),
-                    ),
-                    Text(
-                      _productos[index].name,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.green),
-                    ),
-                    Text(
-                      _productos[index].description,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 15,
-                          color: Colors.grey),
+                      width: 170,
+                      // color: Colors.greenAccent,
+                      child: Text(
+                        _productos[index].description,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 15,
+                            color: Colors.grey),
+                      ),
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const Text(
                           "\$",
@@ -855,6 +872,48 @@ class _HomeState extends State<Home> {
       decoration: BoxDecoration(
           color: pageInitial == index ? Colors.redAccent : Colors.grey),
     );
+  }
+}
+
+class _CustomPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    // var paint = Paint();
+    // paint.color = Colors.green;
+    // paint.style = PaintingStyle.fill;
+
+    // var path = Path();
+
+    // path.moveTo(0, size.height * 0.15);
+    // path.quadraticBezierTo(size.width * 0.25, size.height * 0.0175,
+    //     size.width * 0.5, size.height * 0.9167);
+    // path.quadraticBezierTo(size.width * 0.61, size.height * 0.019584,
+    //     size.width * 1.0, size.height * 0.00167);
+    // path.lineTo(size.width, size.height);
+    // path.lineTo(0, size.height);
+
+    // canvas.drawPath(path, paint);
+    var paint = Paint();
+    paint.color = Colors.green;
+    paint.style = PaintingStyle.fill;
+
+    var path = Path();
+
+    path.moveTo(0, size.height * 0.9167);
+    path.quadraticBezierTo(size.width * 0.25, size.height * 0.875,
+        size.width * 0.5, size.height * 0.9167);
+    path.quadraticBezierTo(size.width * 0.75, size.height * 0.9584,
+        size.width * 1.0, size.height * 0.9167);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    // TODO: implement shouldRepaint
+    return true;
   }
 }
 

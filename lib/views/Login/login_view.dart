@@ -33,13 +33,14 @@ class _LoginState extends State<Login> {
     // 'Content-Type': 'application/json',
     // 'Accept': 'application/json',
     // 'Authorization': accessToken,});
-    final res = await http.get(Uri.parse('http://172.20.10.5:8000/home'),
+    final res = await http.get(Uri.parse('http://192.168.1.76:8000/home'),
         headers: <String, String>{
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Authorization': accessToken,
         });
     if (res.statusCode == 200) {
+      print('BODY --> ' + res.body);
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => const Home()));
     }
@@ -64,7 +65,7 @@ class _LoginState extends State<Login> {
         usernameController.text.isNotEmpty) {
       var password = base64.encode(utf8.encode(passwordController.text));
       final response = await http
-          .post(Uri.parse("http://172.20.10.5:8000/auth/login"), body: {
+          .post(Uri.parse("http://192.168.1.76:8000/auth/login"), body: {
         'username': usernameController.text,
         'password': password.toString(),
       });
