@@ -9,13 +9,17 @@ import '../../models/pet_taxonomia.dart';
 import '../../models/products.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  final String nombreUsuario;
+
+  const Home(this.nombreUsuario, {Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
+  int _isPressed = 0;
+  int _isPressed2 = 0;
   String dropdownValue = 'Entrega a domicilio';
   String dropdownValue2 = 'Calle 10 9';
   var images = [
@@ -34,8 +38,6 @@ class _HomeState extends State<Home> {
   ];
 
   Timer? timer;
-  // late List<dynamic> dataResponse;
-  // int viewPort = 2;
   int pageInitial = 0;
   late PageController _pControler = PageController(initialPage: 0);
   final List<PetTaxonimia> _pets = [];
@@ -48,7 +50,6 @@ class _HomeState extends State<Home> {
             'http://desarrollovan-tis.dedyn.io:4030/GetProductsByIdSeller'),
         body: jsonEncode({"idSeller": "1"}),
         headers: {"Content-Type": "application/json"});
-    // print(jsonDecode(response.body)['getProducts']['response']['docs']);
     List<Products> datos = [];
     final jsonResponse =
         jsonDecode(response.body)['getProducts']['response']['docs'];
@@ -56,7 +57,6 @@ class _HomeState extends State<Home> {
     if (response.statusCode == 200) {
       for (var jsonData in jsonResponse) {
         datos.add(Products.fromJson(jsonData));
-        // print('JsonData -> ' + jsonData.toString());
       }
     } else {
       print('Error -> ' + response.statusCode.toString());
@@ -158,16 +158,23 @@ class _HomeState extends State<Home> {
               // color: Colors.redAccent,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  Icon(Icons.shopping_bag_outlined),
-                  Icon(Icons.notifications_none),
-                  Icon(Icons.supervised_user_circle_rounded),
-                  // Image.asset(
-                  //   'assets/images/2.png',
-                  //   width: 60,
-                  //   height: 60,
-                  //   // color: Colors.white,
-                  // ),
+                children: [
+                  const Icon(
+                    Icons.shopping_bag,
+                    color: Colors.white,
+                    size: 25,
+                  ),
+                  const Icon(
+                    Icons.notifications,
+                    color: Colors.white,
+                    size: 25,
+                  ),
+                  Image.asset(
+                    'assets/images/ic_grupo_3038.PNG',
+                    width: 25,
+                    height: 25,
+                    color: Colors.white,
+                  ),
                 ],
               ),
             ),
@@ -192,23 +199,54 @@ class _HomeState extends State<Home> {
                 _searchBar(),
                 _sliderImage(),
                 const Divider(
-                  color: Colors.grey,
+                  color: Color.fromARGB(255, 213, 213, 213),
                   thickness: 1,
                 ),
                 _productsList(),
-                // Expanded(child: _pageChanged()),
+                _gridImages(context),
+                const Divider(
+                  color: Color.fromARGB(255, 213, 213, 213),
+                  thickness: 1,
+                ),
+                _servicesList(), // Expanded(child: _pageChanged()),
                 _gridImages(context)
               ],
             ),
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        // height: 50,
-        color: const Color(0xff4f1581),
+      bottomNavigationBar: SizedBox(
+        height: 80,
+        width: MediaQuery.of(context).size.width,
+        // color: const Color(0xff4f1581),
         child: CustomPaint(
-          size: const Size(double.infinity, 50),
+          size: Size(MediaQuery.of(context).size.width, 100),
           painter: _CustomPainter(),
+          child: Container(
+            margin: const EdgeInsets.only(right: 30, left: 30, bottom: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // create iconsBUtton for navigationbar
+                Image.asset(
+                  'assets/images/ic_trazado_home.PNG',
+                  width: 35,
+                  height: 35,
+                ),
+                Image.asset(
+                  'assets/images/ic_icon_order.PNG',
+                  width: 35,
+                  height: 35,
+                ),
+                Image.asset(
+                  'assets/images/ic_grupo_3036.PNG',
+                  width: 35,
+                  height: 35,
+                ),
+              ],
+            ),
+          ),
         ),
       ),
       // bottomNavigationBar: _bottomNavigation(context),
@@ -310,52 +348,50 @@ class _HomeState extends State<Home> {
           ),
           Row(
             children: [
-              // list view to text with scroll horizontal
               Container(
                 width: 225,
                 height: 20,
                 alignment: Alignment.center,
-                // color: Colors.red,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: _pets.length,
                   itemBuilder: (context, index) {
-                    // return Padding(
                     return Padding(
                       padding: const EdgeInsets.only(right: 8.0),
                       child: ElevatedButton(
-                        onPressed: null,
+                        onPressed: () {
+                          setState(
+                            () {
+                              print(index);
+                              _isPressed = index;
+                            },
+                          );
+                        },
                         child: Text(
                           _pets[index].pet[0].pet,
-
-                          // "aaa",
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 15,
-                            color: Colors.white,
+                            color: _isPressed == index
+                                ? Colors.white
+                                : Colors.grey,
                           ),
                         ),
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(
-                            Colors.green,
+                            _isPressed == index ? Colors.green : Colors.white,
                           ),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18.0),
-                              side: const BorderSide(color: Colors.grey),
+                              side: _isPressed == index
+                                  ? const BorderSide(color: Colors.green)
+                                  : BorderSide.none,
                             ),
                           ),
                         ),
                       ),
                     );
-                    //   padding: const EdgeInsets.only(right: 8.0),
-                    //   child: Text(
-                    //     "${images[index]['name']}",
-                    //     style: const TextStyle(
-                    //         fontSize: 18, color: Colors.purple),
-                    //     textAlign: TextAlign.center,
-                    //   ),
-                    // );
                   },
                 ),
               ),
@@ -366,38 +402,71 @@ class _HomeState extends State<Home> {
     );
   }
 
-  BottomNavigationBar _bottomNavigation(BuildContext context) {
-    return BottomNavigationBar(
-      backgroundColor: const Color(0xff4f1581),
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.person,
-            color: Colors.white,
+  Container _servicesList() {
+    return Container(
+      height: 50,
+      margin: const EdgeInsets.only(top: 5),
+
+      // color: Colors.grey,
+      child: Row(
+        children: [
+          const Text(
+            'Servicios cerca  ',
+            style: TextStyle(fontSize: 20),
           ),
-          label: 'Profile',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.home,
-            color: Colors.white,
-          ),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.logout,
-            color: Colors.white,
-          ),
-          label: 'Logout',
-        ),
-      ],
-      onTap: (index) {
-        if (index == 2) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => const Login()));
-        }
-      },
+          Row(
+            children: [
+              Container(
+                width: 225,
+                height: 20,
+                alignment: Alignment.center,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _pets.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(
+                            () {
+                              print(index);
+                              _isPressed2 = index;
+                            },
+                          );
+                        },
+                        child: Text(
+                          _pets[index].pet[0].pet,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: _isPressed2 == index
+                                ? Colors.white
+                                : Colors.grey,
+                          ),
+                        ),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                            _isPressed2 == index ? Colors.purple : Colors.white,
+                          ),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: _isPressed2 == index
+                                  ? const BorderSide(color: Colors.purple)
+                                  : BorderSide.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 
@@ -470,10 +539,10 @@ class _HomeState extends State<Home> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text.rich(
+              Text.rich(
                 TextSpan(
                   text: 'Hola ',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
@@ -481,14 +550,14 @@ class _HomeState extends State<Home> {
                   children: [
                     /* AQUI VA EL NOMBRE DEL USUARIO LOGEADO */
                     TextSpan(
-                      text: 'Juan',
-                      style: TextStyle(
+                      text: widget.nombreUsuario.toString(),
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.green,
                       ),
                     ),
-                    TextSpan(
+                    const TextSpan(
                       text: ',',
                       style: TextStyle(
                         fontSize: 20,
@@ -509,7 +578,12 @@ class _HomeState extends State<Home> {
             children: [
               Row(
                 children: [
-                  Image.asset("assets/images/2.png", width: 40, height: 50),
+                  Image.asset(
+                    "assets/images/ic_icon_grupo_353.PNG",
+                    width: 40,
+                    height: 50,
+                    color: Colors.green,
+                  ),
                   const SizedBox(
                     width: 10,
                   ),
@@ -524,7 +598,10 @@ class _HomeState extends State<Home> {
               _comboBox()
             ],
           ),
-          const Divider(color: Colors.black38, height: 3),
+          const SizedBox(
+            height: 4,
+          ),
+          const Divider(color: Color.fromARGB(255, 196, 195, 195), height: 2),
         ],
       ),
     );
@@ -600,51 +677,6 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Column _scrollHorizontal() {
-    return Column(
-      // mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          color: Colors.greenAccent,
-          alignment: Alignment.center,
-          height: 180,
-          child: ListView.builder(
-            itemCount: images.length,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) => Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(right: 20),
-                  // height: 180,
-                  decoration: BoxDecoration(
-                    // color: Colors.redAccent,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: const Color(0xff4f1581),
-                      width: 1,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(images[index]['image'].toString(),
-                          width: 140, height: 120),
-                      Text(images[index]['name'].toString(),
-                          style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
   Container _gridImages(BuildContext context) {
     return Container(
       // flex: 2,
@@ -663,7 +695,7 @@ class _HomeState extends State<Home> {
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => viewProduct(
+                    builder: (context) => ViewProduct(
                         _productos[index].name,
                         _productos[index].description,
                         _productos[index].price,
@@ -825,17 +857,6 @@ class _HomeState extends State<Home> {
             color: Colors.grey[200],
             height: 1,
           ),
-          // Column(
-          //   children: <Widget>[
-          //     Row(
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       children: List.generate(
-          //         _carousselImages.length,
-          //         (index) => _animatedContainer(index: index),
-          //       ),
-          //     ),
-          //   ],
-          // ),
         ],
       ),
     );
@@ -861,58 +882,53 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
-  AnimatedContainer _animatedContainer({required int index}) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeInCubic,
-      height: 4,
-      width: pageInitial == index ? 20 : 12,
-      margin: const EdgeInsets.only(left: 8),
-      decoration: BoxDecoration(
-          color: pageInitial == index ? Colors.redAccent : Colors.grey),
-    );
-  }
 }
 
 class _CustomPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    // var paint = Paint();
-    // paint.color = Colors.green;
-    // paint.style = PaintingStyle.fill;
+    Paint paint0 = Paint()
+      ..color = Colors.green
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 1;
 
-    // var path = Path();
-
-    // path.moveTo(0, size.height * 0.15);
-    // path.quadraticBezierTo(size.width * 0.25, size.height * 0.0175,
-    //     size.width * 0.5, size.height * 0.9167);
-    // path.quadraticBezierTo(size.width * 0.61, size.height * 0.019584,
-    //     size.width * 1.0, size.height * 0.00167);
-    // path.lineTo(size.width, size.height);
-    // path.lineTo(0, size.height);
-
-    // canvas.drawPath(path, paint);
-    var paint = Paint();
-    paint.color = Colors.green;
-    paint.style = PaintingStyle.fill;
-
-    var path = Path();
-
-    path.moveTo(0, size.height * 0.9167);
-    path.quadraticBezierTo(size.width * 0.25, size.height * 0.875,
-        size.width * 0.5, size.height * 0.9167);
-    path.quadraticBezierTo(size.width * 0.75, size.height * 0.9584,
-        size.width * 1.0, size.height * 0.9167);
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
-
-    canvas.drawPath(path, paint);
+    Path path = Path();
+    path.moveTo(0, size.height * 0.1128000);
+    path.quadraticBezierTo(
+      size.width * 0.0902041,
+      size.height * -0.0123000,
+      size.width * 0.1633929,
+      size.height * 0.0103000,
+    );
+    path.cubicTo(
+        size.width * 0.2879847,
+        size.height * -0.0231000,
+        size.width * 0.2751786,
+        size.height * 0.2655000,
+        size.width * 0.5131633,
+        size.height * 0.2771000);
+    path.cubicTo(
+        size.width * 0.6660204,
+        size.height * 0.2665000,
+        size.width * 0.6857398,
+        size.height * 0.2169000,
+        size.width * 0.7969133,
+        size.height * 0.0897000);
+    path.quadraticBezierTo(
+      size.width * 0.8737500,
+      size.height * -0.0645000,
+      size.width * 0.9985969,
+      size.height * 0.0723000,
+    );
+    path.lineTo(size.width * 0.9985969, size.height * 1.0058000);
+    path.lineTo(size.width * -0.0014031, size.height * 1.0058000);
+    path.lineTo(0, size.height * 0.1128000);
+    path.close();
+    canvas.drawPath(path, paint0);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    // TODO: implement shouldRepaint
     return true;
   }
 }
@@ -946,10 +962,12 @@ class ContainerBoarding extends StatelessWidget {
   }
 }
 
-class viewProduct extends StatelessWidget {
+class ViewProduct extends StatelessWidget {
   final String name, description, urlImage;
   final double price;
-  viewProduct(this.name, this.description, this.price, this.urlImage);
+  const ViewProduct(this.name, this.description, this.price, this.urlImage,
+      {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

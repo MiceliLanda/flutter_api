@@ -16,7 +16,6 @@ class _LoginState extends State<Login> {
   var usernameController = TextEditingController();
   var passwordController = TextEditingController();
 
-  // future send post token
   Future<void> _sendPostToken(String token) async {
     final accessToken = 'Bearer ' +
         token.replaceAll(
@@ -24,15 +23,6 @@ class _LoginState extends State<Login> {
                 '"'
                 "]"),
             '');
-    // final response = await http.get(Uri.parse('http://192.168.1.76:8000/home'),
-    //     headers: {
-    //       'Content-Type': 'application/application/json',
-    //       'Authorization': accessToken
-    //     });
-    //  final response = http.get(Uri.parse('http://192.168.1.76:8000/home'), headers: {
-    // 'Content-Type': 'application/json',
-    // 'Accept': 'application/json',
-    // 'Authorization': accessToken,});
     final res = await http.get(Uri.parse('http://192.168.1.76:8000/home'),
         headers: <String, String>{
           'Content-Type': 'application/json',
@@ -40,15 +30,17 @@ class _LoginState extends State<Login> {
           'Authorization': accessToken,
         });
     if (res.statusCode == 200) {
-      print('BODY --> ' + res.body);
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const Home()));
-    }
-    // if (response.statusCode == 200) {
-    //   Navigator.pushReplacement(
-    //       context, MaterialPageRoute(builder: (context) => const Home()));
-    else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Home(
+            jsonDecode(res.body).toString(),
+          ),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
           duration: const Duration(seconds: 3),
           backgroundColor: Colors.redAccent[200],
           elevation: 1,
@@ -56,7 +48,9 @@ class _LoginState extends State<Login> {
             'Invalid credentials',
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          )));
+          ),
+        ),
+      );
     }
   }
 
@@ -72,7 +66,8 @@ class _LoginState extends State<Login> {
       if (response.statusCode == 200) {
         await _sendPostToken(response.body);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
             duration: const Duration(seconds: 1),
             backgroundColor: Colors.redAccent[200],
             elevation: 1,
@@ -81,10 +76,13 @@ class _LoginState extends State<Login> {
               textAlign: TextAlign.center,
               style:
                   TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            )));
+            ),
+          ),
+        );
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
           duration: const Duration(seconds: 1),
           backgroundColor: Colors.redAccent[200],
           elevation: 1,
@@ -92,7 +90,9 @@ class _LoginState extends State<Login> {
             'Campos Vacios',
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          )));
+          ),
+        ),
+      );
     }
   }
 
@@ -100,38 +100,11 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.redAccent,
+        backgroundColor: const Color(0xff4f1581),
         elevation: 0,
         toolbarHeight: 60,
-        // leading: IconButton(
-        //   onPressed: () {},
-        // onPressed: () => {
-        //   Navigator.pop(context)
-        // Navigator.pushReplacement(context,
-        //     MaterialPageRoute(builder: ((context) => const Home())))
-        // },
-        // icon: const Icon(
-        //   Icons.arrow_back,
-        //   color: Colors.white,
-        //   size: 30,
-        // ),
-        // ),
-        centerTitle: true,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Text('Iniciar sesión'),
-            // SizedBox(
-            //   width: 85,
-            //   height: 45,
-            //   child: Image.asset(
-            //     'assets/images/splash.png',
-            //     color: Colors.white,
-            //     fit: BoxFit.fill,
-            //   ),
-            // ),
-          ],
-        ),
+        centerTitle: false,
+        title: const Text('Iniciar sesión'),
       ),
       body: SafeArea(
         child: Expanded(
@@ -140,7 +113,6 @@ class _LoginState extends State<Login> {
             margin:
                 const EdgeInsets.only(top: 35, left: 25, right: 25, bottom: 50),
             width: double.infinity,
-            // color: ColorsView.bgEnabled,
             child: Column(
               textDirection: TextDirection.ltr,
               children: [
@@ -166,20 +138,14 @@ class _LoginState extends State<Login> {
                   alignment: Alignment.centerRight,
                   margin: const EdgeInsets.only(top: 10),
                   child: const InkWell(
-                    child: Text('¿Has olvidado tu contraseña?',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.redAccent)),
-                    //   onTap: () => {
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         builder: (context) => const algo(),
-                    //       ),
-                    //     )
-                    //   },
+                    child: Text(
+                      '¿Has olvidado tu contraseña?',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.redAccent),
+                    ),
                   ),
                 )
               ],
@@ -199,8 +165,10 @@ class _LoginState extends State<Login> {
               child: ElevatedButton(
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40))),
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                  ),
                   backgroundColor:
                       MaterialStateProperty.all<Color>(Colors.green),
                 ),
@@ -227,17 +195,22 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   InkWell(
-                    child: const Text('Regístrate',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromRGBO(252, 20, 96, 1))),
+                    child: const Text(
+                      'Regístrate',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromRGBO(252, 20, 96, 1),
+                      ),
+                    ),
                     onTap: () => {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Register()))
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Register(),
+                        ),
+                      )
                     },
                   )
                 ],
@@ -256,7 +229,10 @@ class _LoginState extends State<Login> {
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15))),
+          borderRadius: BorderRadius.all(
+            Radius.circular(15),
+          ),
+        ),
         hintText: field,
       ),
     );
@@ -269,7 +245,10 @@ class _LoginState extends State<Login> {
       decoration: InputDecoration(
         labelText: 'Password',
         border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15))),
+          borderRadius: BorderRadius.all(
+            Radius.circular(15),
+          ),
+        ),
         suffixIcon: IconButton(
           icon: Icon(_isHide ? Icons.visibility : Icons.visibility_off),
           onPressed: () {
